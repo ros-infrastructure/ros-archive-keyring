@@ -1,0 +1,4 @@
+keyrings/ros-ros2-2019-2025-archive.gpg etc/apt/trusted.gpg.d/
+keyrings/ros-snapshots-2018-2025-archive.gpg etc/apt/trusted.gpg.d/
+keyrings/ros-ros2-archive-keyring.gpg usr/share/keyrings/
+keyrings/ros-snapshots-archive-keyring.gpg usr/share/keyrings/

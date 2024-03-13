@@ -1,0 +1,7 @@
+ros-keyring (200.11.28.1) noble; urgency=medium
+
+  * Convert dbgsym keyrings from Keybox v1 to PGP v4 format, like all
+    other keyrings. Closes: #922348
+
+ -- Dimitri John Ledkov <dimitri.ledkov@canonical.com>  Tue, 28 Nov 2023 01:43:36 +0000
+

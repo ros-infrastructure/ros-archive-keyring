@@ -1,0 +1,14 @@
+Source: ros-keyring
+Section: misc
+Priority: optional
+Maintainer: Jose Luis Rivero <jrivero@osrfoundation.org>
+Standards-Version: 4.1.3
+Build-Depends: gnupg, debian-keyring, debhelper (>= 13)
+
+Package: ros-keyring
+Priority: important
+Architecture: all
+Multi-Arch: foreign
+Description: GnuPG keys of the ROS archive
+ The ROS project digitally signs its Release files. This package
+ contains the archive keys used for that.
