@@ -1,7 +1,6 @@
 README for the ros-keyring package
 =====================================
 
-
 Introduction
 ------------
 
@@ -9,4 +8,35 @@ The ROS project signs its Release files that are stored on the
 ROS server and its mirrors. 
 
 
+Keys and keyrings
+-----------------
+The keyrings/ directory hosts to kind of .gpg files:
 
+ * ros-key-*: gpg individual keys
+    - Extracted from keyrings using "./debian/rules regenerate-key-fragments"
+    - Fingerprint in d/rules
+    - Installed in /etc/apt/trusted.gpg.d/
+
+ * ros-*-keyrings.gpg: group of keys
+    - Installed in /usr/share/keyrings/
+
+The ubuntu-keyring repository design assumes that new keys are first added
+to keyrings files ahd from there current individual keys supported are extracted
+to this repository using:
+
+    - "./debian/rules regenerate-key-fragments"
+
+
+SHA512SUM signature
+-------------------
+
+The SHA512SUM file stores the hashes for the key and keyring gpg files
+signed by the person that updates these gpg keys.
+
+The ubuntu-keyring official package uses the Debian keyring file in
+/usr/share/keyrings/debian-keyring.gpg to check the signature of
+the SHA512SUM file assuming that anyone updating this package
+will have his/her key in the debian keyring.
+
+TODO: for the ROS case the web of trust needs to be stablished in a
+different way.
