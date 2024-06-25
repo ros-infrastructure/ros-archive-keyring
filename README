@@ -10,7 +10,7 @@ ROS server and its mirrors.
 
 Keys and keyrings
 -----------------
-The keyrings/ directory hosts to kind of .gpg files:
+The keyrings/ directory hosts two kind of .gpg files:
 
  * ros-key-*: gpg individual keys
     - Extracted from keyrings using "./debian/rules regenerate-key-fragments"
