@@ -15,9 +15,9 @@ execute_after_dh_auto_build:
 	  echo "Signed-By: /usr/share/keyrings/ros2-archive-keyring.gpg"; \
 	) > ros2.sources
 	( \
-		echo "Package: *"; \
-		echo "Pin: origin ros.org/ros2/ubuntu"; \
-		echo "Pin-Priority: 100"; \
+	  echo "Package: *"; \
+	  echo "Pin: origin ros.org/ros2/ubuntu"; \
+	  echo "Pin-Priority: 100"; \
 	) > ros2.pref
 
 execute_before_dh_install:
