@@ -3,39 +3,7 @@
 %:
 	dh $@
 
-binary: checkkeyrings
-
-regenerate-key-fragments:
-	rm -f keyrings/ros-key-*.gpg
-	# Extracting the keys from the keyrings
-	# 1. Main ROS2 key
-	gpg --no-default-keyring --export-options export-minimal \
-		--keyring ./keyrings/ros-ros2-archive-keyring.gpg \
-		--output keyrings/ros-key-ros2-2019-2025-archive.gpg \
-		--export 0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-	# 2. Snapshots key
-	gpg --no-default-keyring --export-options export-minimal \
-		--keyring ./keyrings/ros-snapshots-archive-keyring.gpg \
-		--output keyrings/ros-key-snapshots-2018-2025-archive.gpg \
-		--export 0x4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA
-	# Rebuild sha512 and signature
-	sha512sum keyrings/*.gpg | gpg --clearsign > SHA512SUMS.txt.asc
-
-checkkeyrings:
-	# TODO(jrivero): Original line in ubuntu-keyserver that relies on the signatures in the Debian keyring
-	# HOME=$(CURDIR) gpg --no-default-keyring --keyring /usr/share/keyrings/debian-keyring.gpg --decrypt SHA512SUMS.txt.asc | tee verified | sha512sum -c -
-	gpg --decrypt SHA512SUMS.txt.asc | tee verified | sha512sum -c -
-	# Check what are the current fragments
-	sha512sum keyrings/*.gpg > current
-	# Check that all fragments were in the verified SHA512SUMS file
-	! grep -f verified -v current
-	rm -rf .gnupg/ current verified
-
 override_dh_installdeb:
 	dh_installdeb
 	# currently all keyring snippets are _not_ conffiles, keep it that way.
 	rm -f debian/*/DEBIAN/conffiles
-
-override_dh_clean:
-	rm -rf .gnupg verified current
-	dh_clean
