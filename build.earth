@@ -1,0 +1,18 @@
+VERSION 0.8
+
+dpkgbuild:
+  FROM debian:bookworm
+  RUN apt-get update
+  RUN apt-get install -y debhelper lintian
+
+ros-archive-keyring:
+  FROM +dpkgbuild
+  RUN mkdir /tmp/pkg
+  WORKDIR /tmp/pkg
+  COPY README .
+  COPY SHA512SUMS.txt.asc .
+  COPY debian debian
+  COPY keyrings keyrings
+  RUN dpkg-buildpackage
+  RUN lintian
+  SAVE ARTIFACT ../*.deb AS LOCAL output/
