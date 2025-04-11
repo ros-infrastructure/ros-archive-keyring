@@ -4,6 +4,8 @@ dpkgbuild:
   FROM debian:bookworm
   RUN apt-get update
   RUN apt-get install -y debhelper lintian
+  # This is needed to correctly populate the Suites entry in sources
+  RUN apt-get install -y lsb-release
 
 ros-archive-keyring:
   FROM +dpkgbuild
@@ -13,7 +15,9 @@ ros-archive-keyring:
   COPY debian debian
   COPY keys keys
   RUN dpkg-buildpackage -us -uc
-  RUN lintian --suppress-tags empty-binary-package
+  # Supressing package-installs-apt-preferences,package-installs-apt-sources warnings since it's permited for keyring packages
+  # See https://wiki.debian.org/DebianRepository/UseThirdParty#Certificate_rollover_and_updates
+  RUN lintian --suppress-tags file-in-etc-not-marked-as-conffile,package-installs-apt-preferences,package-installs-apt-sources
   SAVE ARTIFACT ../*.deb AS LOCAL output/
 
 CHECK:
