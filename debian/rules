@@ -14,6 +14,15 @@ execute_after_dh_auto_build:
 	  echo "Components: main"; \
 	  echo "Signed-By: /usr/share/keyrings/ros2-archive-keyring.gpg"; \
 	) > ros2.sources
+		( \
+	  distribution=$$(lsb_release --id --short | tr 'A-Z' 'a-z'); \
+	  code_name=$$(lsb_release --codename --short); \
+	  echo "Types: deb deb-src"; \
+	  echo "URIs: http://packages.ros.org/ros2-testing/ubuntu"; \
+	  echo "Suites: $${code_name}"; \
+	  echo "Components: main"; \
+	  echo "Signed-By: /usr/share/keyrings/ros2-archive-keyring.gpg"; \
+	) > ros2-testing.sources
 	( \
 	  echo "Package: *"; \
 	  echo "Pin: origin ros.org/ros2/ubuntu"; \
@@ -25,6 +34,9 @@ execute_before_dh_install:
 	install -m 0644 ros2.sources \
 	  debian/tmp/etc/apt/sources.list.d/
 	rm ros2.sources
+	install -m 0644 ros2-testing.sources \
+	  debian/tmp/etc/apt/sources.list.d/
+	rm ros2-testing.sources
 	install -d debian/tmp/etc/apt/preferences.d/
 	install -m 0644 ros2.pref \
 	  debian/tmp/etc/apt/preferences.d/
