@@ -17,7 +17,7 @@ ros-archive-keyring:
   RUN dpkg-buildpackage -us -uc
   # Supressing package-installs-apt-preferences,package-installs-apt-sources warnings since it's permited for keyring packages
   # See https://wiki.debian.org/DebianRepository/UseThirdParty#Certificate_rollover_and_updates
-  RUN lintian --suppress-tags file-in-etc-not-marked-as-conffile,package-installs-apt-preferences,package-installs-apt-sources
+  RUN lintian 
   SAVE ARTIFACT ../*.deb AS LOCAL output/
 
 CHECK:
@@ -29,7 +29,7 @@ CHECK:
   COPY +ros-archive-keyring/${package}*.deb ./
   RUN dpkg -i *.deb
   RUN apt update
-  RUN apt-get install -y ros-jazzy-desktop
+  RUN apt install -y ros-jazzy-desktop
 
 testpkg-main-repos:
   DO +CHECK --package=ros-archive-keyring

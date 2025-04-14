@@ -13,14 +13,4 @@ Depends: ${misc:Depends}
 Description: GnuPG keys of the ROS archive
  The ROS project digitally signs its Release files. This package
  contains the archive keys used for that.
-Conflicts: ros-testing-archive-keyring
-
-Package: ros-testing-archive-keyring
-Priority: important
-Architecture: all
-Multi-Arch: foreign
-Depends: ${misc:Depends}
-Description: GnuPG keys of the ROS testing archive
- The ROS project digitally signs its Release files. This package
- contains the archive keys used for that.
-Conflicts: ros-archive-keyring
+ 

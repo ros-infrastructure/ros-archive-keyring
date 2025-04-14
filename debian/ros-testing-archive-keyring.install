@@ -1,3 +1,0 @@
-keys/* usr/share/keyrings/
-etc/apt/preferences.d/
-etc/apt/sources.list.d/ros2-testing.sources
