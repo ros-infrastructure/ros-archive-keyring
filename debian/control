@@ -1,11 +1,11 @@
 Source: ros-keyring
 Section: misc
 Priority: optional
-Maintainer: Jose Luis Rivero <jrivero@osrfoundation.org>
+Maintainer: Open Robotics Infrastructure <infrastructure@openrobotics.org>
 Standards-Version: 4.1.3
 Build-Depends: gnupg, debhelper (>= 13)
 
-Package: ros-keyring
+Package: ros-archive-keyring
 Priority: important
 Architecture: all
 Multi-Arch: foreign
@@ -13,3 +13,4 @@ Depends: ${misc:Depends}
 Description: GnuPG keys of the ROS archive
  The ROS project digitally signs its Release files. This package
  contains the archive keys used for that.
+ 
