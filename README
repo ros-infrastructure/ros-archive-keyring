@@ -1,8 +1,5 @@
-README for the ros-keyring package
-=====================================
+# build a package
 
-Introduction
-------------
-
-The ROS project signs its Release files that are stored on the
-ROS server and its mirrors. 
+```
+ earthly +ros-archive-keyring
+```
