@@ -3,33 +3,6 @@
 %:
 	dh $@
 
-# code thanks to ceph debian package
-execute_after_dh_auto_build:
-	( \
-	  distribution=$$(lsb_release --id --short | tr 'A-Z' 'a-z'); \
-	  code_name=$$(lsb_release --codename --short); \
-	  echo "Types: deb deb-src"; \
-	  echo "URIs: http://packages.ros.org/ros2/ubuntu"; \
-	  echo "Suites: $${code_name}"; \
-	  echo "Components: main"; \
-	  echo "Signed-By: /usr/share/keyrings/ros2-archive-keyring.gpg"; \
-	) > ros2.sources
-	( \
-	  echo "Package: *"; \
-	  echo "Pin: origin ros.org/ros2/ubuntu"; \
-	  echo "Pin-Priority: 100"; \
-	) > ros2.pref
-
-execute_before_dh_install:
-	install -d debian/tmp/etc/apt/sources.list.d/
-	install -m 0644 ros2.sources \
-	  debian/tmp/etc/apt/sources.list.d/
-	rm ros2.sources
-	install -d debian/tmp/etc/apt/preferences.d/
-	install -m 0644 ros2.pref \
-	  debian/tmp/etc/apt/preferences.d/
-	rm ros2.pref
-
 override_dh_installdeb:
 	dh_installdeb
 	# currently all keyring snippets are _not_ conffiles, keep it that way.
