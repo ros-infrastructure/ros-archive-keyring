@@ -15,7 +15,8 @@ INSTALL_PACKAGE:
   ARG --required package_dir
   ARG --required package
   COPY ${package_dir}/${package}*.deb ./
-  RUN dpkg -i *.deb
+  RUN ls
+  RUN apt-get install ./${package}*.deb -y
 
 BUILD_PACKAGE: 
   FUNCTION
@@ -38,7 +39,7 @@ ros-archive-keyring:
   FROM +dpkgbuild
   RUN mkdir /tmp/pkg
   WORKDIR /tmp/pkg
-  # add additional folders outside of standard debian packaging oness
+  # add additional folders outside of standard debian packaging ones
   COPY ros-archive-keyring/keys keys
   DO +BUILD_PACKAGE --package=ros-archive-keyring
 
@@ -74,6 +75,7 @@ test-aptsource-pkg-install:
   ]; then exit 0; else exit 1; fi;
 
 integration-test-main-repos:
+  # Test that repo configuration is complete when installing keyring and apt-source packages. 
   ARG distro = ubuntu:noble
   FROM ${distro}
   DO +INSTALL_PACKAGE --package=ros-archive-keyring --package_dir=./output
@@ -87,7 +89,9 @@ integration-test-testing-repos:
   DO +INSTALL_PACKAGE --package=ros-testing-apt-source --package_dir=./output/${distro}
   RUN apt update
   RUN apt install ros-rolling-desktop -y
+
 integration-check-switch: 
+  # Test users are expected to be able to switch between the testing and main repositories seamlessly. 
   ARG distro = ubuntu:noble
   FROM ${distro}
   DO +INSTALL_PACKAGE --package=ros-archive-keyring --package_dir=./output
@@ -97,8 +101,7 @@ integration-check-switch:
           [ -e /etc/apt/sources.list.d/ros2.sources ] && \ 
           [ -s /etc/apt/sources.list.d/ros2.sources \
   ]; then exit 0; else exit 1; fi;
-  RUN dpkg -P ros-apt-source
-  RUN dpkg -l
+  RUN apt purge ros-apt-source -y
   RUN apt update
   DO +INSTALL_PACKAGE --package=ros-testing-apt-source --package_dir=./output/${distro}
   RUN if  [ -f /etc/apt/sources.list.d/ros2-testing.sources ] && \ 
@@ -106,3 +109,4 @@ integration-check-switch:
           [ -s /etc/apt/sources.list.d/ros2-testing.sources \
   ]; then exit 0; else exit 1; fi;
   RUN if  ! [ -f /etc/apt/sources.list.d/ros2.sources]; then exit 0; else exit 1; fi;
+  RUN exit 1;
