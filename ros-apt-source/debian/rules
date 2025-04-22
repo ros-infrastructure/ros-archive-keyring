@@ -6,26 +6,44 @@
 # code thanks to ceph debian package
 execute_after_dh_auto_build:
 	( \
-	  distribution=$$(lsb_release --id --short | tr 'A-Z' 'a-z'); \
-	  code_name=$$(lsb_release --codename --short); \
+		code_name=$$(. /etc/os-release && echo $$VERSION_CODENAME); \
 	  echo "Types: deb deb-src"; \
 	  echo "URIs: http://packages.ros.org/ros2/ubuntu"; \
 	  echo "Suites: $${code_name}"; \
 	  echo "Components: main"; \
-	  echo "Signed-By: /usr/share/keyrings/ros2-archive-keyring.gpg"; \
+	  echo "Signed-By: /usr/share/keyrings/ros-archive-keyring.gpg"; \
 	) > ros2.sources
+	( \
+		code_name=$$(. /etc/os-release && echo $$VERSION_CODENAME); \
+	  echo "Types: deb deb-src"; \
+	  echo "URIs: http://packages.ros.org/ros2-testing/ubuntu"; \
+	  echo "Suites: $${code_name}"; \
+	  echo "Components: main"; \
+	  echo "Signed-By: /usr/share/keyrings/ros-archive-keyring.gpg"; \
+	) > ros2-testing.sources
 	( \
 	  echo "Package: *"; \
 	  echo "Pin: origin ros.org/ros2/ubuntu"; \
 	  echo "Pin-Priority: 100"; \
 	) > ros2.pref
+		( \
+	  echo "Package: *"; \
+	  echo "Pin: origin ros.org/ros2-testing/ubuntu"; \
+	  echo "Pin-Priority: 100"; \
+	) > ros2-testing.pref
 
 execute_before_dh_install:
 	install -d debian/tmp/etc/apt/sources.list.d/
 	install -m 0644 ros2.sources \
 	  debian/tmp/etc/apt/sources.list.d/
 	rm ros2.sources
+	install -m 0644 ros2-testing.sources \
+	  debian/tmp/etc/apt/sources.list.d/
+	rm ros2-testing.sources
 	install -d debian/tmp/etc/apt/preferences.d/
 	install -m 0644 ros2.pref \
 	  debian/tmp/etc/apt/preferences.d/
 	rm ros2.pref
+		install -m 0644 ros2-testing.pref \
+	  debian/tmp/etc/apt/preferences.d/
+	rm ros2-testing.pref

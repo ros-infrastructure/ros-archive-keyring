@@ -1,1 +1,2 @@
-keys/* usr/share/keyrings/
+ros2.sources etc/apt/sources.list.d/
+ros2.pref etc/apt/preferences.d/
