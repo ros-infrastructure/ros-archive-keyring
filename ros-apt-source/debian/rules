@@ -31,19 +31,4 @@ execute_after_dh_auto_build:
 	  echo "Pin: origin ros.org/ros2-testing/ubuntu"; \
 	  echo "Pin-Priority: 100"; \
 	) > ros2-testing.pref
-
-execute_before_dh_install:
-	install -d debian/tmp/etc/apt/sources.list.d/
-	install -m 0644 ros2.sources \
-	  debian/tmp/etc/apt/sources.list.d/
-	rm ros2.sources
-	install -m 0644 ros2-testing.sources \
-	  debian/tmp/etc/apt/sources.list.d/
-	rm ros2-testing.sources
-	install -d debian/tmp/etc/apt/preferences.d/
-	install -m 0644 ros2.pref \
-	  debian/tmp/etc/apt/preferences.d/
-	rm ros2.pref
-		install -m 0644 ros2-testing.pref \
-	  debian/tmp/etc/apt/preferences.d/
-	rm ros2-testing.pref
+	
