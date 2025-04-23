@@ -117,3 +117,9 @@ integration-check-switch:
   # Verify that main repo is not configured anymore
   # trailing / is important here to avoid matching ros2*
   RUN if ! apt policy | grep 'packages.ros.org/ros2/'; then exit 0; else exit 1; fi;
+
+all-integration-tests: 
+  ARG distro = ubuntu:noble
+  BUILD +integration-test-main-repos --distro=${distro}
+  BUILD +integration-test-testing-repos --distro=${distro}
+  BUILD +integration-check-switch --distro=${distro}
