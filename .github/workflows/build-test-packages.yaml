@@ -18,7 +18,7 @@ jobs:
       - name: Build keyring deb
         run: earthly +ros-archive-keyring
       - name: Test keyring deb
-        run: earthly +ros-archive-keyring
+        run: earthly +test-keyring-pkg-install
   build-apt-source:
     runs-on: ubuntu-latest
     strategy:
@@ -41,7 +41,6 @@ jobs:
     strategy:
       matrix:
         distro: [debian:bullseye,debian:bookworm,ubuntu:jammy,ubuntu:noble ]
-    needs: [build-keyring, build-apt-source]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -49,4 +48,7 @@ jobs:
           sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
           sudo chmod 755 /usr/local/bin/earthly
       - name: Test integration
-        run: earthly +all-integration-tests --distro=${{ matrix.distro }}
+        run: | 
+              earthly +build-ros-apt-source --distro=${{ matrix.distro }}
+              earthly +ros-archive-keyring
+              earthly +all-integration-tests --distro=${{ matrix.distro }}
