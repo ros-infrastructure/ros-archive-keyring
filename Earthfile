@@ -15,7 +15,6 @@ INSTALL_PACKAGE:
   ARG --required package_dir
   ARG --required package
   COPY ${package_dir}/${package}*.deb ./
-  RUN ls
   RUN apt-get install ./${package}*.deb -y
 
 BUILD_PACKAGE: 
@@ -53,8 +52,8 @@ test-keyring-pkg-install:
   # Test that keyring package can be installed and configures the keys appropiately
   ARG distro = ubuntu:noble
   FROM ${distro}
-  LET install_key_path = /usr/share/keyrings/ros-archive-keyring.gpg
-  DO +INSTALL_PACKAGE --package=ros-archive-keyring
+  LET install_key_path = /usr/share/keyrings/ros-archive-keyring.gpg 
+  DO +INSTALL_PACKAGE --package=ros-archive-keyring --package_dir=./output
   RUN if  [ -f ${install_key_path} ] && \ 
           [ -e ${install_key_path} ] && \ 
           [ -s ${install_key_path} \
@@ -62,17 +61,29 @@ test-keyring-pkg-install:
 
 test-aptsource-pkg-install:
   # Test that apt source package is installable and that it configures the necessary files
+  ARG testing = false
   ARG distro = ubuntu:noble
+ 
   FROM ${distro}
-  DO +INSTALL_PACKAGE --package=ros-apt-source --package_dir=./output/${distro}
-  RUN if  [ -f /etc/apt/sources.list.d/ros2.sources ] && \ 
-          [ -e /etc/apt/sources.list.d/ros2.sources ] && \ 
-          [ -s /etc/apt/sources.list.d/ros2.sources \
+  LET repo = ros2
+  LET package = ros-apt-source
+
+  IF  ${testing} == "true"
+    SET repo = ros2-testing
+    SET package = ros-testing-apt-source
+  END
+  DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
+  RUN echo ${repo}
+  RUN if  [ -f /usr/share/ros-apt-source/${repo}.sources ] && \ 
+          [ -e /usr/share/ros-apt-source/${repo}.sources ] && \ 
+          [ -s /usr/share/ros-apt-source/${repo}.sources \
   ]; then exit 0; else exit 1; fi;
-  RUN if  [ -f /etc/apt/preferences.d/ros2.pref ] && \ 
-          [ -e /etc/apt/preferences.d/ros2.pref ] && \ 
-          [ -s /etc/apt/preferences.d/ros2.pref \
+  RUN if  [ -f /usr/share/ros-apt-source/${repo}.pref ] && \ 
+          [ -e /usr/share/ros-apt-source/${repo}.pref ] && \ 
+          [ -s /usr/share/ros-apt-source/${repo}.pref \
   ]; then exit 0; else exit 1; fi;
+  RUN if  [ -h /etc/apt/sources.list.d/ros2.sources ]; then exit 0; else exit 1; fi;  
+  RUN if  [ -h /etc/apt/preferences.d/ros2.pref ]; then exit 0; else exit 1; fi;  
 
 integration-test-main-repos:
   # Test that repo configuration is complete when installing keyring and apt-source packages. 
@@ -97,16 +108,12 @@ integration-check-switch:
   DO +INSTALL_PACKAGE --package=ros-archive-keyring --package_dir=./output
   DO +INSTALL_PACKAGE --package=ros-apt-source --package_dir=./output/${distro}
   RUN apt update
-  RUN if  [ -f /etc/apt/sources.list.d/ros2.sources ] && \ 
-          [ -e /etc/apt/sources.list.d/ros2.sources ] && \ 
-          [ -s /etc/apt/sources.list.d/ros2.sources \
-  ]; then exit 0; else exit 1; fi;
-  RUN apt purge ros-apt-source -y
+  RUN apt policy | grep 'packages.ros.org/ros2/'
+  RUN apt remove ros-apt-source -y
   RUN apt update
   DO +INSTALL_PACKAGE --package=ros-testing-apt-source --package_dir=./output/${distro}
-  RUN if  [ -f /etc/apt/sources.list.d/ros2-testing.sources ] && \ 
-          [ -e /etc/apt/sources.list.d/ros2-testing.sources ] && \ 
-          [ -s /etc/apt/sources.list.d/ros2-testing.sources \
-  ]; then exit 0; else exit 1; fi;
-  RUN if  ! [ -f /etc/apt/sources.list.d/ros2.sources]; then exit 0; else exit 1; fi;
-  RUN exit 1;
+  RUN apt update  
+  RUN apt policy | grep 'packages.ros.org/ros2-testing/'
+  # Verify that main repo is not configured anymore
+  # trailing / is important here to avoid matching ros2*
+  RUN if ! apt policy | grep 'packages.ros.org/ros2/'; then exit 0; else exit 1; fi;
