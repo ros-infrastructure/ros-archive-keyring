@@ -21,6 +21,9 @@ jobs:
         run: earthly +ros-archive-keyring
   build-apt-source:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [debian:bullseye,debian:bookworm,ubuntu:jammy,ubuntu:noble ]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
