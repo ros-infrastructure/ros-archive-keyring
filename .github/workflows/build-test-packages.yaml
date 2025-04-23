@@ -1,4 +1,4 @@
-name: Build Variants
+name: Build keyring
 
 on:
   push:
@@ -28,10 +28,10 @@ jobs:
           sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
           sudo chmod 755 /usr/local/bin/earthly
       - name: Build apt-source deb
-        run: earthly +build-ros-apt-source
+        run: earthly +build-ros-apt-source --distro=${{ matrix.distro }}
       - name: Test apt-source deb 
         run:  | 
-              earthly +test-aptsource-pkg-install --distro=${{ matrix.version }}
+              earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }}
               earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --testing=true
   ci:
     runs-on: ubuntu-latest
