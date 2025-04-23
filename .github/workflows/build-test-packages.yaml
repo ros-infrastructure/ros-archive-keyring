@@ -1,4 +1,4 @@
-name: Build keyring
+name: Build packages
 
 on:
   push:
@@ -41,6 +41,7 @@ jobs:
     strategy:
       matrix:
         distro: [debian:bullseye,debian:bookworm,ubuntu:jammy,ubuntu:noble ]
+    needs: [build-keyring, build-apt-source]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
