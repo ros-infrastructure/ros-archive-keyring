@@ -47,8 +47,10 @@ jobs:
         run: |
           sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
           sudo chmod 755 /usr/local/bin/earthly
-      - name: Test integration
+      - name: Build packages integration
         run: | 
               earthly +build-ros-apt-source --distro=${{ matrix.distro }}
               earthly +ros-archive-keyring
+      - name: Test integration
+        run: | 
               earthly +all-integration-tests --distro=${{ matrix.distro }}
