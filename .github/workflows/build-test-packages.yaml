@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-apt-source:
+  build-ros2-apt-source:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [debian:bullseye,debian:bookworm,ubuntu:jammy,ubuntu:noble ]
+        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble ]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -19,16 +19,33 @@ jobs:
           sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
           sudo chmod 755 /usr/local/bin/earthly
       - name: Build apt-source deb
-        run: earthly +build-ros-apt-source --distro=${{ matrix.distro }}
-      - name: Test apt-source deb 
+        run: earthly +ros-apt-source --distro=${{ matrix.distro }}
+      - name: Test ros 2 apt-source deb 
         run:  | 
               earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }}
               earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --testing=true
-  ci:
+  build-ros-apt-source:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [debian:bullseye,debian:bookworm,ubuntu:jammy,ubuntu:noble ]
+        distro: [ubuntu:focal]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Earthly
+        run: |
+          sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
+          sudo chmod 755 /usr/local/bin/earthly
+      - name: Build apt-source deb
+        run: earthly +ros-apt-source --distro=${{ matrix.distro }}
+      - name: Test ros 2 apt-source deb 
+        run:  | 
+              earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --repo=ros
+              earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --testing=true --repo-ros
+  ros2-ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble ]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -38,7 +55,27 @@ jobs:
       - name: Build packages integration
         run: | 
               earthly +build-ros-apt-source --distro=${{ matrix.distro }}
-              earthly +ros-archive-keyring
       - name: Test integration
         run: | 
-              earthly +all-integration-tests --distro=${{ matrix.distro }}
+              earthly +ros2-test-repos --distro=${{ matrix.distro }}
+              earthly +ros2-test-repos --distro=${{ matrix.distro }} --package=ros2-testing-apt-source
+              earthly +integration-check-switch: --distro=${{ matrix.distro }}
+  ros-ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [ubuntu:focal]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Earthly
+        run: |
+          sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
+          sudo chmod 755 /usr/local/bin/earthly
+      - name: Build packages integration
+        run: | 
+              earthly +build-ros-apt-source --distro=${{ matrix.distro }}
+      - name: Test integration
+        run: | 
+              earthly +ros-test-repos --distro=${{ matrix.distro }}
+              earthly +ros-test-repos --distro=${{ matrix.distro }} --package=ros-testing-apt-source
+              earthly +integration-check-switch: --distro=${{ matrix.distro }} --repo=ros
