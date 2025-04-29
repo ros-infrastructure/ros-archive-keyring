@@ -54,7 +54,7 @@ jobs:
           sudo chmod 755 /usr/local/bin/earthly
       - name: Build packages integration
         run: | 
-              earthly +build-ros-apt-source --distro=${{ matrix.distro }}
+              earthly +ros-apt-source --distro=${{ matrix.distro }}
       - name: Test integration
         run: | 
               earthly +ros2-test-repos --distro=${{ matrix.distro }}
@@ -73,7 +73,7 @@ jobs:
           sudo chmod 755 /usr/local/bin/earthly
       - name: Build packages integration
         run: | 
-              earthly +build-ros-apt-source --distro=${{ matrix.distro }}
+              earthly +ros-apt-source --distro=${{ matrix.distro }}
       - name: Test integration
         run: | 
               earthly +ros-test-repos --distro=${{ matrix.distro }}
