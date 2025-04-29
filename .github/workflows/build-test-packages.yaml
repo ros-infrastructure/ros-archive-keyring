@@ -7,18 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-keyring:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Earthly
-        run: |
-          sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
-          sudo chmod 755 /usr/local/bin/earthly
-      - name: Build keyring deb
-        run: earthly +ros-archive-keyring
-      - name: Test keyring deb
-        run: earthly +test-keyring-pkg-install
   build-apt-source:
     runs-on: ubuntu-latest
     strategy:
