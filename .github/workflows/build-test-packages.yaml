@@ -24,6 +24,8 @@ jobs:
         run:  | 
               earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --repo=ros2
               earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --repo=ros2-testing
+
+  build-ros-apt-source:
     runs-on: ubuntu-latest
     strategy:
       matrix:
