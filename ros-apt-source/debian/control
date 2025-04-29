@@ -3,24 +3,41 @@ Section: misc
 Priority: optional
 Maintainer: Open Robotics Infrastructure <infrastructure@openrobotics.org>
 Standards-Version: 4.1.3
-Build-Depends: debhelper (>= 13)
+Build-Depends: debhelper (>= 12)
 
 Package: ros-apt-source
 Priority: important
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}
-Description: Source configuration for the ROS 2 apt repository.
- This package configures sources and preferences for the ROS repo.
+Description: Source and key configuration for the ROS apt repository.
+ This package configures sources for the ROS testing repo.
 Conflicts: ros-testing-apt-source
-Recommends: ros-archive-keyring
 
 Package: ros-testing-apt-source
 Priority: important
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}
-Description: Source configuration for the ROS 2 testing apt repository.
- This package configures sources and preferences for the ROS testing repo.
+Description: Source and key configuration for the ROS testing apt repository.
+ This package configures sources for the ROS testing repo.
 Conflicts: ros-apt-source
-Recommends: ros-archive-keyring
+
+
+Package: ros2-apt-source
+Priority: important
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: Source and key configuration for the ROS 2 apt repository.
+ This package configures sources for the ROS 2 repo.
+Conflicts: ros2-testing-apt-source
+
+Package: ros2-testing-apt-source
+Priority: important
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: Source and key configuration for the ROS 2 testing apt repository.
+ This package configures sources for the ROS  2 testing repo.
+Conflicts: ros2-apt-source

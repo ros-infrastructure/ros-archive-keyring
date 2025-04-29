@@ -1,2 +1,2 @@
-ros2-testing.sources  usr/share/ros-apt-source
-ros2-testing.pref usr/share/ros-apt-source
+ros-testing.sources  usr/share/ros-apt-source
+keys/ros-archive-keyring.gpg usr/share/keyrings

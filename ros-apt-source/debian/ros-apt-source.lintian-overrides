@@ -1,3 +1,0 @@
-# Configuring preferences is recommended for third-party repository configuration through a package.
-# See https://wiki.debian.org/DebianRepository/UseThirdParty
-ros-apt-source : package-installs-apt-preferences 
