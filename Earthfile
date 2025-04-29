@@ -45,7 +45,6 @@ build-all:
 
 test-aptsource-pkg-install:
   # Test that apt source package is installable and that it configures the necessary files
-  ARG testing = false
   ARG distro = ubuntu:noble
   ARG repo = ros2
 
@@ -54,10 +53,6 @@ test-aptsource-pkg-install:
   ENV TZ=Etc/UTC 
   LET package = ${repo}-apt-source
 
-  IF  ${testing} == "true"
-    SET repo = ${repo}-testing
-    SET package = ros-testing-apt-source
-  END
   DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
   RUN echo ${repo}
   RUN if  [ -f /usr/share/ros-apt-source/${repo}.sources ] && \ 
