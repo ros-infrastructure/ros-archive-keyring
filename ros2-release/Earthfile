@@ -40,9 +40,9 @@ test-release-pkg-install:
           [ -e /etc/yum.repos.d/ros2-testing.repo ] && \ 
           [ -s /etc/yum.repos.d/ros2-testing.repo \
   ]; then exit 0; else exit 1; fi;
-  RUN if  [ -f /etc/pki/rpm-gpg/ros2-key.gpg ] && \ 
-          [ -e /etc/pki/rpm-gpg/ros2-key.gpg ] && \ 
-          [ -s /etc/pki/rpm-gpg/ros2-key.gpg \
+  RUN if  [ -f /etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2 ] && \ 
+          [ -e /etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2 ] && \ 
+          [ -s /etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2 \
   ]; then exit 0; else exit 1; fi;
 
 ros2-test-repos:
