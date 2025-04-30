@@ -4,7 +4,7 @@ Release:        %autorelease
 Summary:        Packages for ROS repository configuration
 BuildArch: noarch
 License: ASL 2.0
-URL: https://github.com/ros-infrastructure/ros-archive-keyring
+URL: https://github.com/ros-infrastructure/ros-apt-source
 Source0: README.md
 Source1: copyright
  
