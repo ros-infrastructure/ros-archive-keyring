@@ -55,7 +55,6 @@ ros2-test-repos:
       RUN dnf config-manager --set-disabled ros2
       RUN dnf config-manager --set-enabled ros2-testing
   END
-  RUN dnf makecache -y
   RUN dnf install -y ros-rolling-ros-workspace
 
 
@@ -64,13 +63,11 @@ integration-check-switch:
   ARG distro = almalinux:8
   FROM ${distro}
   DO +INSTALL_PACKAGE --package=ros2-release
-  RUN dnf makecache -y
   RUN dnf repolist | grep "ros2 "
   RUN if ! dnf repolist | grep "ros2-testing" ; then exit 0; else exit 1; fi;
 
   RUN dnf config-manager --set-disabled ros2
   RUN dnf config-manager --set-enabled ros2-testing
-  RUN dnf makecache -y
   RUN dnf repolist | grep ros2-testing
   # # Verify that main repo is not configured anymore
   RUN if ! dnf repolist | grep "ros2 " ; then exit 0; else exit 1; fi;
