@@ -22,3 +22,23 @@ Run
 ```
 earthly +build-all
 ```
+
+## Uploading packages to the bootstrap repo.
+
+After release, copy packages to the bootstrap repo:
+
+```
+scp -r output apt@repos.ros.org:ros-apt-source
+```
+
+Import each set of packages into the corresponding bootstrap repository.
+```
+aptly repo add ros_bootstrap-focal ros-apt-source/ubuntu\:focal/ros*.deb
+aptly repo add ros_bootstrap-jammy ros-apt-source/ubuntu\:jammy/ros2*.deb
+aptly repo add ros_bootstrap-noble ros-apt-source/ubuntu\:noble/ros2*.deb
+bin/snapshot-and-publish-all ros_bootstrap
+```
+
+TODO: Instructions for updating RPM bootstrap repo.
+
+Run import_upstream (and import_upstream_rpm) on build.ros.org and build.ros2.org to complete the package import
