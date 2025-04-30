@@ -1,0 +1,73 @@
+VERSION 0.8
+
+rpmbuild:
+  FROM almalinux:8
+  RUN dnf install -y rpmdevtools rpmlint
+
+BUILD_PACKAGE:
+  FUNCTION
+  ARG package
+  WORKDIR /tmp/$package
+  COPY . /tmp/$package
+  RUN rpmbuild -ba ${package}.spec --define "_topdir /tmp/$package/rpm" --define "_sourcedir /tmp/$package"
+  RUN rpmlint /tmp/$package/rpm/RPMS/noarch/${package}*.rpm /tmp/$package/rpm/SRPMS/${package}*.src.rpm
+  SAVE ARTIFACT /tmp/$package/rpm/RPMS/noarch/${package}*.rpm AS LOCAL output/
+  SAVE ARTIFACT /tmp/$package/rpm/SRPMS/${package}*.src.rpm AS LOCAL output/
+
+
+INSTALL_PACKAGE: 
+  FUNCTION
+  ARG --required package
+  # RUN dnf install -y dnf-command\(config-manager\) && dnf config-manager --set-enabled powertools && dnf install -y epel-release
+  COPY +ros2-release/${package}*.noarch.rpm  ./ 
+  RUN dnf install -y ${package}*.rpm 
+
+
+ros2-release:
+  FROM +rpmbuild
+  DO +BUILD_PACKAGE --package=ros2-release 
+
+test-release-pkg-install:
+  # Test that ros-release package is installable and that it configures the necessary files
+  ARG distro = almalinux:8
+  FROM ${distro}
+  DO +INSTALL_PACKAGE --package=ros2-release
+  RUN if  [ -f /etc/yum.repos.d/ros2.repo ] && \ 
+          [ -e /etc/yum.repos.d/ros2.repo ] && \ 
+          [ -s /etc/yum.repos.d/ros2.repo \
+  ]; then exit 0; else exit 1; fi;
+  RUN if  [ -f /etc/yum.repos.d/ros2-testing.repo ] && \ 
+          [ -e /etc/yum.repos.d/ros2-testing.repo ] && \ 
+          [ -s /etc/yum.repos.d/ros2-testing.repo \
+  ]; then exit 0; else exit 1; fi;
+  RUN if  [ -f /etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2 ] && \ 
+          [ -e /etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2 ] && \ 
+          [ -s /etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2 \
+  ]; then exit 0; else exit 1; fi;
+
+ros2-test-repos:
+  # Test that repo configuration is complete when installing keyring and apt-source packages. 
+  ARG distro = almalinux:8
+  ARG repo = ros2
+  FROM ${distro}
+  DO +INSTALL_PACKAGE --package=ros2-release
+  IF [ repo == "ros2-testing" ]
+      RUN dnf config-manager --set-disabled ros2
+      RUN dnf config-manager --set-enabled ros2-testing
+  END
+  RUN dnf install -y ros-rolling-ros-workspace
+
+
+integration-check-switch: 
+  # Test users are expected to be able to switch between the testing and main repositories seamlessly. 
+  ARG distro = almalinux:8
+  FROM ${distro}
+  DO +INSTALL_PACKAGE --package=ros2-release
+  RUN dnf repolist | grep "ros2 "
+  RUN if ! dnf repolist | grep "ros2-testing" ; then exit 0; else exit 1; fi;
+
+  RUN dnf config-manager --set-disabled ros2
+  RUN dnf config-manager --set-enabled ros2-testing
+  RUN dnf repolist | grep ros2-testing
+  # # Verify that main repo is not configured anymore
+  RUN if ! dnf repolist | grep "ros2 " ; then exit 0; else exit 1; fi;

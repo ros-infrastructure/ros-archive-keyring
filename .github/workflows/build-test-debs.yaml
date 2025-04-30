@@ -1,11 +1,13 @@
-name: Build packages
+name: Build Deb packages
 
 on:
   push:
     branches: ["latest"]
   pull_request:
   workflow_dispatch:
-
+defaults:
+    run:
+      working-directory: ./ros-apt-source
 jobs:
   build-ros2-apt-source:
     runs-on: ubuntu-latest

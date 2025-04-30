@@ -1,0 +1,41 @@
+name: Build RPM packages
+
+on:
+  push:
+    branches: ["latest"]
+  pull_request:
+  workflow_dispatch:
+defaults:
+    run:
+      working-directory: ./ros2-release
+jobs:
+  build-ros2-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Earthly
+        run: |
+          sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
+          sudo chmod 755 /usr/local/bin/earthly
+      - name: Build ros2-release rpm
+        run: earthly +ros2-release --distro=almalinux:8
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [almalinux:8, almalinux:9]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Earthly
+        run: |
+          sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
+          sudo chmod 755 /usr/local/bin/earthly
+      - name: Test installation
+        run: | 
+              earthly +test-release-pkg-install --distro=${{ matrix.distro }} 
+      - name: Test integration
+        run: | 
+              earthly +ros2-test-repos --distro=${{ matrix.distro }}
+              earthly +ros2-test-repos --distro=${{ matrix.distro }} --repo=ros2-testing
+              earthly +integration-check-switch --distro=${{ matrix.distro }}
+ 

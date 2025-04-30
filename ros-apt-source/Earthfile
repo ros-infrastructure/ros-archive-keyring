@@ -22,9 +22,9 @@ BUILD_PACKAGE:
   FUNCTION
   ARG package
   ARG target
-  COPY ${package}/debian debian
+  COPY debian debian
   RUN . /etc/os-release && sed -i "s:~\$CODENAME:~$VERSION_CODENAME:" debian/changelog 
-  COPY ${package}/README .
+  COPY README .
   RUN dpkg-buildpackage 
   RUN lintian 
   SAVE ARTIFACT ../*.deb AS LOCAL output/${target}/
@@ -35,7 +35,7 @@ ros-apt-source:
   RUN mkdir /tmp/pkg
   WORKDIR /tmp/pkg
   # add additional folders outside of standard debian packaging ones
-  COPY ros-apt-source/keys keys
+  COPY keys keys
   DO +BUILD_PACKAGE --package=ros-apt-source --target=${distro}
 
 build-all:
