@@ -21,7 +21,9 @@ This package contains the ROS 2 repository configuration and GPG key.
 %prep
 %setup -q -c -T
 cp -a %{SOURCE0} .
- 
+
+%build
+
 %install
 install -Dp -m 0644 -t %{buildroot}%{_sysconfdir}/pki/rpm-gpg %{S:10}
 install -Dp -m 0644 -t %{buildroot}%{_sysconfdir}/yum.repos.d %{S:20} %{S:21}
