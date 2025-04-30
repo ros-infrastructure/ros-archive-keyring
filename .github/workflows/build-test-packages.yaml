@@ -60,7 +60,7 @@ jobs:
         run: | 
               earthly +ros2-test-repos --distro=${{ matrix.distro }}
               earthly +ros2-test-repos --distro=${{ matrix.distro }} --package=ros2-testing-apt-source
-              earthly +integration-check-switch: --distro=${{ matrix.distro }}
+              earthly +integration-check-switch --distro=${{ matrix.distro }}
   ros-ci:
     runs-on: ubuntu-latest
     strategy:
@@ -79,4 +79,4 @@ jobs:
         run: | 
               earthly +ros-test-repos --distro=${{ matrix.distro }}
               earthly +ros-test-repos --distro=${{ matrix.distro }} --package=ros-testing-apt-source
-              earthly +integration-check-switch: --distro=${{ matrix.distro }} --repo=ros
+              earthly +integration-check-switch --distro=${{ matrix.distro }} --repo=ros
