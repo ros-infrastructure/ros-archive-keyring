@@ -22,22 +22,15 @@ INSTALL_PACKAGE:
   ARG --required package
   ARG --required distro
   # RUN dnf install -y dnf-command\(config-manager\) && dnf config-manager --set-enabled powertools && dnf install -y epel-release
-  COPY (+ros2-release/${package}*.noarch.rpm --distro=${distro}) ./ 
+  COPY +ros2-release/${package}*.noarch.rpm  ./ 
   RUN dnf install -y ${package}*.rpm 
 
 
 ros2-release:
-  ARG --required distro
   FROM +rpmbuild
-  DO +BUILD_PACKAGE --package=ros2-release --distro=${distro}
-  DO +BUILD_PACKAGE --package=ros2-testing-release --distro=${distro}
+  DO +BUILD_PACKAGE --package=ros2-release 
+  DO +BUILD_PACKAGE --package=ros2-testing-release
 
-
-build-all:
-  FROM almalinux:8
-  FOR distro IN $supported_ros_platforms
-        BUILD  +ros2-release --distro=${distro} 
-  END
 
 
 test-release-pkg-install:
@@ -46,7 +39,7 @@ test-release-pkg-install:
   ARG repo = ros2
   LET package = ${repo}-release
   FROM ${distro}
-  DO +INSTALL_PACKAGE --package=${package} --distro=${distro}
+  DO +INSTALL_PACKAGE --package=${package}
   RUN if  [ -f /etc/yum.repos.d/${repo}.repo ] && \ 
           [ -e /etc/yum.repos.d/${repo}.repo ] && \ 
           [ -s /etc/yum.repos.d/${repo}.repo \
@@ -62,7 +55,7 @@ ros2-test-repos:
   ARG repo = ros2
   LET package = ${repo}-release
   FROM ${distro}
-  DO +INSTALL_PACKAGE --package=${package} --distro=${distro}
+  DO +INSTALL_PACKAGE --package=${package}
   RUN dnf makecache -y
   RUN dnf install -y ros-rolling-ros-workspace
 
@@ -71,11 +64,11 @@ integration-check-switch:
   # Test users are expected to be able to switch between the testing and main repositories seamlessly. 
   ARG distro = almalinux:8
   FROM ${distro}
-  DO +INSTALL_PACKAGE --package=ros2-release --distro=${distro}
+  DO +INSTALL_PACKAGE --package=ros2-release
   RUN dnf makecache -y
   RUN dnf repolist | grep "ros2 "
   RUN dnf remove ros2-release -y
-  DO +INSTALL_PACKAGE --package=ros2-testing-release --distro=${distro} 
+  DO +INSTALL_PACKAGE --package=ros2-testing-release 
   RUN dnf makecache -y
   RUN dnf repolist | grep ros2-testing
   # # Verify that main repo is not configured anymore
