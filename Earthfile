@@ -23,6 +23,7 @@ BUILD_PACKAGE:
   ARG package
   ARG target
   COPY ${package}/debian debian
+  RUN . /etc/os-release && sed -i "s:~\$CODENAME:~$VERSION_CODENAME:" debian/changelog 
   COPY ${package}/README .
   RUN dpkg-buildpackage 
   RUN lintian 

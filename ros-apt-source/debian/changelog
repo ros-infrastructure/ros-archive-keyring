@@ -1,4 +1,4 @@
-ros-apt-source (2024.03.17) UNRELEASED; urgency=medium
+ros-apt-source (1.0.0~$CODENAME) UNRELEASED; urgency=medium
 
   * Initial package
 
