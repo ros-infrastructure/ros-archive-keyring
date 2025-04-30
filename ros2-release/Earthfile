@@ -1,7 +1,5 @@
 VERSION 0.8
 
-ARG --global supported_ros_platforms = almalinux:8 almalinux:9 almalinux:10
-
 rpmbuild:
   FROM almalinux:8
   RUN dnf install -y rpmdevtools rpmlint
@@ -29,8 +27,6 @@ ros2-release:
   FROM +rpmbuild
   DO +BUILD_PACKAGE --package=ros2-release 
   DO +BUILD_PACKAGE --package=ros2-testing-release
-
-
 
 test-release-pkg-install:
   # Test that ros-release package is installable and that it configures the necessary files
