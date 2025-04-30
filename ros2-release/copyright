@@ -1,9 +1,0 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: ros2-release
-Upstream-Contact:  infrastructure@openrobotics.org
-Source: https://github.com/ros-infrastructure/ros-apt-source
-License: Apache-2.0
-
-Files: *
-Copyright: 2025 Open Source Robotics Foundation
-License: Apache-2.0
