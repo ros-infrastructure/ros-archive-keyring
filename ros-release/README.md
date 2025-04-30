@@ -1,3 +1,8 @@
-## ROS 2 release
+README for the ros2-release package
+=====================================
 
-`ros2-release` 
+Introduction
+------------
+
+The ROS project signs its Release files that are stored on the
+ROS server and its mirrors. This package configures signing keys and sources for the ROS repositories.
