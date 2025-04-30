@@ -4,7 +4,7 @@ enabled=0
 baseurl=http://packages.ros.org/ros2-testing/rhel/$releasever/$basearch/
 gpgcheck=0
 repo_gpgcheck=1
-gpgkey=https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2
 
 [ros2-testing-debug]
 name=ROS 2 Testing - $basearch Debug
@@ -12,7 +12,7 @@ enabled=0
 baseurl=http://packages.ros.org/ros2-testing/rhel/$releasever/$basearch/debug/
 gpgcheck=0
 repo_gpgcheck=1
-gpgkey=https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2
 
 [ros2-testing-source]
 name=ROS 2 Testing - Source
@@ -20,4 +20,4 @@ enabled=0
 baseurl=http://packages.ros.org/ros2-testing/rhel/$releasever/SRPMS/
 gpgcheck=0
 repo_gpgcheck=1
-gpgkey=https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ROS2
