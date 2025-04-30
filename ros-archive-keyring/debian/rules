@@ -1,9 +1,0 @@
-#!/usr/bin/make -f
-
-%:
-	dh $@
-
-override_dh_installdeb:
-	dh_installdeb
-	# currently all keyring snippets are _not_ conffiles, keep it that way.
-	rm -f debian/*/DEBIAN/conffiles
