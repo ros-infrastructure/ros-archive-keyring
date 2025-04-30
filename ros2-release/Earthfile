@@ -20,7 +20,6 @@ BUILD_PACKAGE:
 INSTALL_PACKAGE: 
   FUNCTION
   ARG --required package
-  ARG --required distro
   # RUN dnf install -y dnf-command\(config-manager\) && dnf config-manager --set-enabled powertools && dnf install -y epel-release
   COPY +ros2-release/${package}*.noarch.rpm  ./ 
   RUN dnf install -y ${package}*.rpm 
