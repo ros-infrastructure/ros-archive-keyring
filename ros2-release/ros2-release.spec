@@ -1,7 +1,7 @@
 Name:           ros2-release
 Version:        1.0.0
 Summary:        Packages for ROS 2 main repository configuration
-Release: 1%{?dist}%{?release_suffix}
+Release: 1%{?release_suffix}
 BuildArch: noarch
 License: ASL 2.0
 URL: https://github.com/ros-infrastructure/ros-apt-source
