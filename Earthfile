@@ -67,7 +67,7 @@ test-aptsource-pkg-install:
           [ -s /usr/share/keyrings/${version}-archive-keyring.gpg \
   ]; then exit 0; else exit 1; fi; 
 
-  RUN if  [ -h /etc/apt/sources.list.d/${repo}.sources ]; then exit 0; else exit 1; fi;  
+  RUN if  [ -h /etc/apt/sources.list.d/${version}.sources ]; then exit 0; else exit 1; fi;  
 
 ros2-test-repos:
   # Test that repo configuration is complete when installing keyring and apt-source packages. 
