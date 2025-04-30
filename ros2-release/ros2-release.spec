@@ -7,7 +7,6 @@ License: ASL 2.0
 URL: https://github.com/ros-infrastructure/ros-apt-source
 Source0: README.md
 Source1: copyright
-Requires:  dnf-command(config-manager)
 Requires:  epel-release
 Conflicts: ros2-testing-release
 
