@@ -29,7 +29,6 @@ install -Dp -m 0644 -t %{buildroot}%{_sysconfdir}/yum.repos.d %{S:20} %{S:21}
 %build 
 
 %files
-%license 
 %doc README.md
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ROS2
 %config(noreplace) %{_sysconfdir}/yum.repos.d/ros2.repo
