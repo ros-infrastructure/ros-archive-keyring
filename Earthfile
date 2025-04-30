@@ -47,12 +47,11 @@ test-aptsource-pkg-install:
   # Test that apt source package is installable and that it configures the necessary files
   ARG distro = ubuntu:noble
   ARG repo = ros2
-
+  ARG version = ros2
   FROM ${distro}
   ENV DEBIAN_FRONTEND=noninteractive 
   ENV TZ=Etc/UTC 
   LET package = ${repo}-apt-source
-
   DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
   RUN echo ${repo}
   RUN if  [ -f /usr/share/ros-apt-source/${repo}.sources ] && \ 
@@ -61,13 +60,13 @@ test-aptsource-pkg-install:
   ]; then exit 0; else exit 1; fi;
   # test that embbeded key is passed
   RUN if [ ${distro} != "ubuntu:focal" ]; then \
-  cat /usr/share/ros-apt-source/${repo}.sources | grep 'BEGIN PGP PUBLIC KEY BLOCK' \
-  ; else \
-      if  [ -f /usr/share/keyrings/${repo}-archive-keyring.gpg ] && \ 
-          [ -e /usr/share/keyrings/${repo}-archive-keyring.gpg ] && \ 
-          [ -s /usr/share/keyrings/${repo}-archive-keyring.gpg \
-  ]; then exit 0; else exit 1; fi; \
-  fi;
+         cat /usr/share/ros-apt-source/${repo}.sources | grep 'BEGIN PGP PUBLIC KEY BLOCK'; \
+        fi;
+  RUN if  [ -f /usr/share/keyrings/${version}-archive-keyring.gpg ] && \ 
+          [ -e /usr/share/keyrings/${version}-archive-keyring.gpg ] && \ 
+          [ -s /usr/share/keyrings/${version}-archive-keyring.gpg \
+  ]; then exit 0; else exit 1; fi; 
+
   RUN if  [ -h /etc/apt/sources.list.d/${repo}.sources ]; then exit 0; else exit 1; fi;  
 
 ros2-test-repos:

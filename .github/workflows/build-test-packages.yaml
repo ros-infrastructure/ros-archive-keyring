@@ -40,8 +40,8 @@ jobs:
         run: earthly +ros-apt-source --distro=${{ matrix.distro }}
       - name: Test ros 2 apt-source deb 
         run:  | 
-              earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --repo=ros
-              earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --repo=ros-testing
+              earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --repo=ros --version=ros
+              earthly +test-aptsource-pkg-install --distro=${{ matrix.distro }} --repo=ros-testing --version=ros
   ros2-ci:
     runs-on: ubuntu-latest
     strategy:
