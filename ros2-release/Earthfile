@@ -26,18 +26,19 @@ INSTALL_PACKAGE:
 ros2-release:
   FROM +rpmbuild
   DO +BUILD_PACKAGE --package=ros2-release 
-  DO +BUILD_PACKAGE --package=ros2-testing-release
 
 test-release-pkg-install:
   # Test that ros-release package is installable and that it configures the necessary files
   ARG distro = almalinux:8
-  ARG repo = ros2
-  LET package = ${repo}-release
   FROM ${distro}
-  DO +INSTALL_PACKAGE --package=${package}
-  RUN if  [ -f /etc/yum.repos.d/${repo}.repo ] && \ 
-          [ -e /etc/yum.repos.d/${repo}.repo ] && \ 
-          [ -s /etc/yum.repos.d/${repo}.repo \
+  DO +INSTALL_PACKAGE --package=ros2-release
+  RUN if  [ -f /etc/yum.repos.d/ros2.repo ] && \ 
+          [ -e /etc/yum.repos.d/ros2.repo ] && \ 
+          [ -s /etc/yum.repos.d/ros2.repo \
+  ]; then exit 0; else exit 1; fi;
+  RUN if  [ -f /etc/yum.repos.d/ros2-testing.repo ] && \ 
+          [ -e /etc/yum.repos.d/ros2-testing.repo ] && \ 
+          [ -s /etc/yum.repos.d/ros2-testing.repo \
   ]; then exit 0; else exit 1; fi;
   RUN if  [ -f /etc/pki/rpm-gpg/ros2-key.gpg ] && \ 
           [ -e /etc/pki/rpm-gpg/ros2-key.gpg ] && \ 
@@ -48,9 +49,12 @@ ros2-test-repos:
   # Test that repo configuration is complete when installing keyring and apt-source packages. 
   ARG distro = almalinux:8
   ARG repo = ros2
-  LET package = ${repo}-release
   FROM ${distro}
-  DO +INSTALL_PACKAGE --package=${package}
+  DO +INSTALL_PACKAGE --package=ros2-release
+  IF [ repo == "ros2-testing" ]
+      RUN dnf config-manager --set-disabled ros2
+      RUN dnf config-manager --set-enabled ros2-testing
+  END
   RUN dnf makecache -y
   RUN dnf install -y ros-rolling-ros-workspace
 
@@ -62,8 +66,10 @@ integration-check-switch:
   DO +INSTALL_PACKAGE --package=ros2-release
   RUN dnf makecache -y
   RUN dnf repolist | grep "ros2 "
-  RUN dnf remove ros2-release -y
-  DO +INSTALL_PACKAGE --package=ros2-testing-release 
+  RUN if ! dnf repolist | grep "ros2-testing" ; then exit 0; else exit 1; fi;
+
+  RUN dnf config-manager --set-disabled ros2
+  RUN dnf config-manager --set-enabled ros2-testing
   RUN dnf makecache -y
   RUN dnf repolist | grep ros2-testing
   # # Verify that main repo is not configured anymore

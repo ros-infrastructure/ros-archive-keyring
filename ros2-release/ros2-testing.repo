@@ -1,6 +1,6 @@
 [ros2-testing]
 name=ROS 2 Testing - $basearch
-enabled=1
+enabled=0
 baseurl=http://packages.ros.org/ros2-testing/rhel/$releasever/$basearch/
 gpgcheck=0
 repo_gpgcheck=1
