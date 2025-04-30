@@ -1,0 +1,2 @@
+ros2.sources usr/share/ros-apt-source
+keys/ros2-archive-keyring.gpg usr/share/keyrings

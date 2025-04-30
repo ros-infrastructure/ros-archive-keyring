@@ -1,8 +1,24 @@
-README for the ros-keyring package
-=====================================
+# ROS archive keyring
 
-Introduction
-------------
+This repository contains the packages for configuring keys and source for the ROS repositories.
 
-The ROS project signs its Release files that are stored on the
-ROS server and its mirrors. 
+The packages target the supported platforms for which binary packages are built. 
+The supported ROS-OS pairs are: 
+
+|       | Ubuntu Focal | Ubuntu Jammy | Ubuntu Noble |
+|-------|--------------|--------------|--------------|
+| ROS   | *            |              |              |
+| ROS 2 | *            | *            | *            |
+
+## About the package
+
+The package configures the keyring in `/usr/share/keyrings` and the corresponding source file is symlinked from `/usr/share/ros-apt-source` to the expected path `/etc/apt/sources.list.d`. 
+From Jammy onwards the key is embedded in that source file and the content from this is pulled from the keyring and parsed to the special format on build(See: https://manpages.ubuntu.com/manpages/noble/man5/sources.list.5.html). The keyring is left in place even with the embedded key to facilitate key validation without having to extract the key from the sources file.
+
+
+## Building the packages
+
+Run 
+```
+earthly +build-all
+```
