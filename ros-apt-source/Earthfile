@@ -2,7 +2,7 @@ VERSION 0.8
 
 # list of supported platforms per https://www.ros.org/reps/rep-2000.html.
 # This reflects supported platforms for humble, jazzy, kilted and rolling.
-ARG --global supported_ros_platforms = ubuntu:jammy ubuntu:noble ubuntu:focal
+ARG --global supported_ros_platforms = ubuntu:jammy ubuntu:noble ubuntu:focal debian:bookworm debian:buster debian:bullseye debian:trixie 
 
 dpkgbuild:
   ARG distro = debian:bookworm

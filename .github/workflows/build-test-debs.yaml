@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble ]
+        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble,debian:bookworm,debian:bullseye,debian:trixie]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal]
+        distro: [ubuntu:focal,debian:buster]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble ]
+        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble,debian:bookworm,debian:bullseye,debian:trixie]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal]
+        distro: [ubuntu:focal, debian:buster]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly

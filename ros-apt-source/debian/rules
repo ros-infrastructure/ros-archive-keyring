@@ -28,7 +28,7 @@ execute_after_dh_auto_build:
 		code_name=$$VERSION_CODENAME; \
 	 	short_version=$$(echo $$VERSION_ID | cut -c1-2); \
 		key=$$( echo "/usr/share/keyrings/ros2-archive-keyring.gpg"); \
-		if ( [ "$$short_version" \> "20" ] && [ "$$ID" = "ubuntu" ] ); then key=$$(gpg --import keys/ros2-archive-keyring.gpg && gpg --export -a "Open Robotics <info@osrfoundation.org>" | sed -e '2s/^/./' -e 's/^/ /' ); fi ;\
+		if ( [ "$$short_version" \> "20" ] && [ "$$ID" = "ubuntu" ] ) || ( [ "$$short_version" \> "11" ] && [ "$$ID" = "debian" ]); then key=$$(gpg --import keys/ros2-archive-keyring.gpg && gpg --export -a "Open Robotics <info@osrfoundation.org>" | sed -e '2s/^/./' -e 's/^/ /' ); fi ;\
 		echo "Types: deb deb-src"; \
 	  echo "URIs: http://packages.ros.org/ros2/ubuntu"; \
 	  echo "Suites: $${code_name}"; \
