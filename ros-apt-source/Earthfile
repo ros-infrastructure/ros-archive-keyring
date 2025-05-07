@@ -88,6 +88,18 @@ ros2-test-repos:
   RUN apt update
   RUN apt install ros-rolling-ros-workspace -y
 
+infra-test-repos:
+  # Test that repo configuration is complete when installing keyring and apt-source packages. 
+  ARG distro = ubuntu:noble
+  ARG package = ros2-apt-source
+
+  FROM ${distro}
+  ENV DEBIAN_FRONTEND=noninteractive 
+  ENV TZ=Etc/UTC 
+  DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
+  RUN apt update
+  RUN apt install python3-colcon-core -y
+
 ros-test-repos:
   ARG distro = ubuntu:focal
   ARG package = ros-apt-source
