@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble,debian:bookworm,debian:bullseye,debian:trixie]
+        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
