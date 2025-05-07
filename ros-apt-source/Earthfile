@@ -80,7 +80,7 @@ ros2-test-repos:
   ENV TZ=Etc/UTC 
   DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
   RUN apt update
-  RUN apt install ros-rolling-desktop -y
+  RUN apt install ros-rolling-ros-workspace -y
 
 ros-test-repos:
   ARG distro = ubuntu:focal
@@ -91,7 +91,7 @@ ros-test-repos:
   ENV TZ=Etc/UTC 
   DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
   RUN apt update
-  RUN apt install ros-noetic-desktop-full -y
+  RUN apt install ros-noetic-catkin -y
 
 integration-check-switch: 
   # Test users are expected to be able to switch between the testing and main repositories seamlessly. 

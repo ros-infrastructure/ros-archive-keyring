@@ -4,6 +4,9 @@ on:
   push:
     branches: ["latest"]
   pull_request:
+    paths:
+      - 'ros-apt-source/**'
+      - 'Earthfile'
   workflow_dispatch:
 defaults:
     run:
