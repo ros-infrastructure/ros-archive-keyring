@@ -12,7 +12,7 @@ dpkgbuild:
   ENV TZ=Etc/UTC 
   RUN apt-get update
   # Debian buster has an older version of debhelper but the backports archive has a compatible one
-  # Use backports version to avoid updating package logic for legacy versiob.
+  # Use backports version to avoid updating package logic for legacy version.
   RUN if  [ ${distro} = "debian:buster" ]; then \ 
       echo "deb http://archive.debian.org/debian-archive/debian buster-backports main" | tee /etc/apt/sources.list.d/backports.list > /dev/null && \ 
       apt-get update && apt-get install -y  dwz/buster-backports debhelper/buster-backports>12 lintian/buster-backports \ 
