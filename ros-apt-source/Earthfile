@@ -66,14 +66,16 @@ test-aptsource-pkg-install:
           [ -s /usr/share/ros-apt-source/${repo}.sources \
   ]; then exit 0; else exit 1; fi;
   # test that embbeded key is passed
-  RUN if [[ ! legacy_distros[*] =~ ${distro} ]]; then \
-         cat /usr/share/ros-apt-source/${repo}.sources | grep 'BEGIN PGP PUBLIC KEY BLOCK'; \
+      RUN  if [ "$legacy_distros" == *"$distro"* ]; then \
+         if grep 'BEGIN PGP PUBLIC KEY BLOCK' /usr/share/ros-apt-source/${repo}.sources > /dev/null ; then \
+            exit 0; \
+            else exit 1; \
+            fi; \ 
         fi;
   RUN if  [ -f /usr/share/keyrings/${version}-archive-keyring.gpg ] && \ 
           [ -e /usr/share/keyrings/${version}-archive-keyring.gpg ] && \ 
           [ -s /usr/share/keyrings/${version}-archive-keyring.gpg \
   ]; then exit 0; else exit 1; fi; 
-
   RUN if  [ -h /etc/apt/sources.list.d/${version}.sources ]; then exit 0; else exit 1; fi;  
 
 ros2-test-repos:
