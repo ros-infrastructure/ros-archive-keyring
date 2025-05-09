@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble ]
+        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble,debian:bookworm,debian:bullseye]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal]
+        distro: [ubuntu:focal,debian:buster]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble ]
+        distro: [ubuntu:focal,ubuntu:jammy,ubuntu:noble]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly
@@ -66,11 +66,30 @@ jobs:
               earthly +ros2-test-repos --distro=${{ matrix.distro }}
               earthly +ros2-test-repos --distro=${{ matrix.distro }} --package=ros2-testing-apt-source
               earthly +integration-check-switch --distro=${{ matrix.distro }}
+  infra-pkgs-ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [debian:bookworm,debian:bullseye]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Earthly
+        run: |
+          sudo wget 'https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64' -O /usr/local/bin/earthly
+          sudo chmod 755 /usr/local/bin/earthly
+      - name: Build packages integration
+        run: | 
+              earthly +ros-apt-source --distro=${{ matrix.distro }}
+      - name: Test integration
+        run: | 
+              earthly +infra-test-repos --distro=${{ matrix.distro }}
+              earthly +infra-test-repos --distro=${{ matrix.distro }} --package=ros2-testing-apt-source
+              earthly +integration-check-switch --distro=${{ matrix.distro }}
   ros-ci:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [ubuntu:focal]
+        distro: [ubuntu:focal, debian:buster]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Earthly

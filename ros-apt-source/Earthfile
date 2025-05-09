@@ -2,7 +2,8 @@ VERSION 0.8
 
 # list of supported platforms per https://www.ros.org/reps/rep-2000.html.
 # This reflects supported platforms for humble, jazzy, kilted and rolling.
-ARG --global supported_ros_platforms = ubuntu:jammy ubuntu:noble ubuntu:focal
+ARG --global supported_ros_platforms = ubuntu:jammy ubuntu:noble ubuntu:focal debian:bookworm debian:buster debian:bullseye
+ARG --global legacy_distros = ubuntu:focal debian:buster debian:bullseye
 
 dpkgbuild:
   ARG distro = debian:bookworm
@@ -10,7 +11,12 @@ dpkgbuild:
   ENV DEBIAN_FRONTEND=noninteractive 
   ENV TZ=Etc/UTC 
   RUN apt-get update
-  RUN apt-get install -y debhelper>=13 lintian 
+  # Debian buster has an older version of debhelper but the backports archive has a compatible one
+  # Use backports version to avoid updating package logic for legacy version.
+  RUN if  [ ${distro} = "debian:buster" ]; then \ 
+      echo "deb http://archive.debian.org/debian-archive/debian buster-backports main" | tee /etc/apt/sources.list.d/backports.list > /dev/null && \ 
+      apt-get update && apt-get install -y  dwz/buster-backports debhelper/buster-backports>12 lintian/buster-backports \ 
+      ; else apt-get install -y debhelper lintian ; fi;  
 INSTALL_PACKAGE: 
   FUNCTION
   ARG --required package_dir
@@ -60,14 +66,16 @@ test-aptsource-pkg-install:
           [ -s /usr/share/ros-apt-source/${repo}.sources \
   ]; then exit 0; else exit 1; fi;
   # test that embbeded key is passed
-  RUN if [ ${distro} != "ubuntu:focal" ]; then \
-         cat /usr/share/ros-apt-source/${repo}.sources | grep 'BEGIN PGP PUBLIC KEY BLOCK'; \
+      RUN  if [ "$legacy_distros" == *"$distro"* ]; then \
+         if grep 'BEGIN PGP PUBLIC KEY BLOCK' /usr/share/ros-apt-source/${repo}.sources > /dev/null ; then \
+            exit 0; \
+            else exit 1; \
+            fi; \ 
         fi;
   RUN if  [ -f /usr/share/keyrings/${version}-archive-keyring.gpg ] && \ 
           [ -e /usr/share/keyrings/${version}-archive-keyring.gpg ] && \ 
           [ -s /usr/share/keyrings/${version}-archive-keyring.gpg \
   ]; then exit 0; else exit 1; fi; 
-
   RUN if  [ -h /etc/apt/sources.list.d/${version}.sources ]; then exit 0; else exit 1; fi;  
 
 ros2-test-repos:
@@ -81,6 +89,18 @@ ros2-test-repos:
   DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
   RUN apt update
   RUN apt install ros-rolling-ros-workspace -y
+
+infra-test-repos:
+  # Test that repo configuration is complete when installing keyring and apt-source packages. 
+  ARG distro = ubuntu:noble
+  ARG package = ros2-apt-source
+
+  FROM ${distro}
+  ENV DEBIAN_FRONTEND=noninteractive 
+  ENV TZ=Etc/UTC 
+  DO +INSTALL_PACKAGE --package=${package} --package_dir=./output/${distro}
+  RUN apt update
+  RUN apt install python3-colcon-core -y
 
 ros-test-repos:
   ARG distro = ubuntu:focal
