@@ -5,10 +5,19 @@ This repository contains the packages for configuring keys and source for the RO
 The packages target the supported platforms for which binary packages are built. 
 The supported ROS-OS pairs are: 
 
-|       | Ubuntu Focal | Ubuntu Jammy | Ubuntu Noble | RHEL 8 | RHEL 9 |
-|-------|--------------|--------------|--------------|--------|--------|
-| ROS   | *            |              |              |        |        |
-| ROS 2 | *            | *            | *            | *      | *      |
+|                 | ROS | ROS 2 |
+|-----------------|-----|-------|
+| Debian Buster   | *   |       |
+| Ubuntu Focal    | *   | *     |
+| Ubuntu Jammy    |     | *     |
+| Ubuntu Noble    |     | *     |
+| RHEL 8          |     | *     |
+| RHEL 9          |     | *     |
+| Debian Bullseye |     | ^     |
+| Debian Bookworm |     | ^     |
+
+> [*] Testing with ROS debs
+> [^] Testing with Infra pkgs since no debs available.
 
 ## About the package
 
